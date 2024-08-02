@@ -1,7 +1,6 @@
-import dotenv from 'dotenv';
-import app from './app.js';
+import app from './src/app.js';
 
-dotenv.config();
+console.log('JWT_SECRET: IN SERVER ', process.env.JWT_SECRET);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

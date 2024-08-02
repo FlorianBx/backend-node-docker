@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { JWT_SECRET } from '../config.js';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET;
 
 export const register = async (req, res) => {
   const { email, password, role } = req.body;
@@ -20,9 +20,9 @@ export const login = async (req, res) => {
   if (!user || !await bcrypt.compare(password, user.password)) {
     return res.sendStatus(401).json({ message: 'Invalid email or password' });
   }
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
   res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
-  res.json({ message: 'Logged in successfully' });
+  res.json({ message: `Logged in successfully, ${user.email}` });
 };
 
 export const getUsers = async (_, res) => {

@@ -21,7 +21,14 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: /app/entrypoint.sh
+
+  migrate:
+    build: .
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    command: npx prisma migrate dev --name init
+    depends_on:
+      - db
 
 volumes:
   pgdata:
