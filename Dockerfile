@@ -9,10 +9,7 @@ COPY . .
 
 RUN npm install && npm -g install nodemon && npx prisma generate --schema /app/src/prisma/schema.prisma
 
-
 COPY . .
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 3000
 CMD ["nodemon", "server.js"]

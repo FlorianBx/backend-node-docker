@@ -11,7 +11,6 @@ app.use(cors({
   credentials: true
 }));
 
-console.log('JWT_SECRET: IN APP ', process.env.JWT_SECRET);
 app.use(express.json());
 app.use(cookieParser());
 
