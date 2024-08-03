@@ -1,6 +1,5 @@
-import app from './src/app.js';
-
-console.log('JWT_SECRET: IN SERVER ', process.env.JWT_SECRET);
+import app from './app.js';
+import process from 'node:process';
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
