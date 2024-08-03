@@ -8,11 +8,13 @@ const prisma = new PrismaClient();
 export const register = async (req, res) => {
   const { email, password, role } = req.body;
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (!existingUser) {
-    return res.sendStatus(400).json({ message: "Email already exists" });
-  }
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
 
+  if (existingUser) {
+    return res.status(400).json({ error: "Email already exists" });
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
     data: { email, password: hashedPassword, role },
@@ -26,13 +28,12 @@ export const login = async (req, res) => {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.sendStatus(401).json({ message: "Invalid email or password" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
 
   const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
     expiresIn: "1h",
   });
-
   res.cookie("token", token, {
     httpOnly: true,
     secure: true,
@@ -44,5 +45,6 @@ export const login = async (req, res) => {
 
 export const getUsers = async (_, res) => {
   const users = await prisma.user.findMany();
+
   res.json(users);
 };
