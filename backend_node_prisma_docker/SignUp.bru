@@ -1,0 +1,20 @@
+meta {
+  name: SignUp
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "mwatest@hotmail.com",
+    "password": "Test1234",
+    "role": "USER"
+  }
+  
+}

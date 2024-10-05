@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "backend_node_prisma_docker",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

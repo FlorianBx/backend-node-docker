@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { JWT_SECRET } from "../config.js";
+import { PrismaClient } from '@prisma/client';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { JWT_SECRET } from '../config.js';
 
 const prisma = new PrismaClient();
 
@@ -13,14 +13,14 @@ export const register = async (req, res) => {
   });
 
   if (existingUser) {
-    return res.status(400).json({ error: "Email already exists" });
+    return res.status(400).json({ error: 'Email already exists' });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: { email, password: hashedPassword, role },
   });
 
-  res.json(user);
+  res.json({ message: 'User created successfully', email, role });
 };
 
 export const login = async (req, res) => {
@@ -28,19 +28,24 @@ export const login = async (req, res) => {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Invalid email or password" });
+    return res.status(401).json({ message: 'Invalid email or password' });
   }
 
   const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: '1h',
   });
-  res.cookie("token", token, {
+  res.cookie('token', token, {
     httpOnly: true,
     secure: true,
-    sameSite: "Strict",
+    sameSite: 'Strict',
   });
 
   res.json({ message: `Logged in successfully, ${user.email}` });
+};
+
+export const logout = async (_, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
 };
 
 export const getUsers = async (_, res) => {
