@@ -1,19 +1,36 @@
 # 🔐 Projet Express avec Authentification JWT et Refresh Token
 
-1. Introduction
+## 📚 Table des matières
+
+1. [Introduction](#introduction)
+2. [Configuration Docker](#configuration-docker)
+3. [Architecture du projet](#architecture-du-projet)
+4. [Flux d'authentification](#flux-dauthentification)
+5. [Système de Refresh Token](#système-de-refresh-token)
+6. [Sécurité et bonnes pratiques](#sécurité-et-bonnes-pratiques)
+
+## 1. Introduction
+
 Ce projet est une application Express qui implémente un système d'authentification robuste utilisant JWT (JSON Web Tokens) avec un mécanisme de refresh token. Il est conçu pour fournir une base solide pour la création d'applications web sécurisées.
-2. Configuration Docker
+
+## 2. Configuration Docker
+
 Le projet utilise Docker pour faciliter le déploiement et assurer la cohérence de l'environnement.
-Dockerfile
-dockerfileCopyFROM node:18-alpine
+
+### Dockerfile
+```dockerfile
+FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
-docker-compose.yml
-yamlCopyversion: '3.8'
+```
+
+### docker-compose.yml
+```yaml
+version: '3.8'
 services:
   app:
     build: .
@@ -34,13 +51,24 @@ services:
 
 volumes:
   postgres_data:
+```
+
 Pour démarrer l'application :
-Copydocker-compose up --build
+```
+docker-compose up --build
+```
+
 Pour l'arrêter :
-Copydocker-compose down
-3. Architecture du projet
+```
+docker-compose down
+```
+
+## 3. Architecture du projet
+
 Le projet est structuré comme suit :
-Copyproject-root/
+
+```
+project-root/
 │
 ├── controllers/
 │   ├── authController.js
@@ -63,6 +91,7 @@ Copyproject-root/
 ├── config.js
 ├── server.js
 └── schema.prisma
+```
 
 ## 4. L'aventure de Marye : Un voyage à travers notre système d'authentification
 
@@ -267,35 +296,27 @@ Cette approche offre plusieurs avantages :
 
 ## 6. Sécurité et bonnes pratiques
 
-Stockage sécurisé des tokens :
+1. **Stockage sécurisé des tokens** :
+   - Utilisation de cookies HTTP-only pour prévenir les attaques XSS.
+   
+2. **Protection contre les attaques CSRF** :
+   - Utilisation du flag `SameSite` sur les cookies.
 
-Utilisation de cookies HTTP-only pour prévenir les attaques XSS.
+3. **Hachage des mots de passe** :
+   - Utilisation de bcrypt pour un stockage sécurisé.
 
+4. **Gestion des erreurs** :
+   - Messages d'erreur génériques pour ne pas divulguer d'informations sensibles.
 
-Protection contre les attaques CSRF :
+5. **Validation des entrées** :
+   - Vérification systématique des données reçues côté serveur.
 
-Utilisation du flag SameSite sur les cookies.
+Exemple de hachage de mot de passe dans `authService.js` :
 
-
-Hachage des mots de passe :
-
-Utilisation de bcrypt pour un stockage sécurisé.
-
-
-Gestion des erreurs :
-
-Messages d'erreur génériques pour ne pas divulguer d'informations sensibles.
-
-
-Validation des entrées :
-
-Vérification systématique des données reçues côté serveur.
-
-
-
-Exemple de hachage de mot de passe dans authService.js :
-javascriptCopyexport const hashPassword = async (password) => {
+```javascript
+export const hashPassword = async (password) => {
   return bcrypt.hash(password, 10);
 };
+```
 
 Avec cette architecture et ces pratiques de sécurité, Marye peut naviguer en toute tranquillité dans notre application, sachant que ses données sont bien protégées ! 🛡️
