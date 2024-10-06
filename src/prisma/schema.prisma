@@ -8,9 +8,11 @@ generator client {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  password String
-  role     String   @default("user")
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  password     String
+  role         String   @default("USER")
+  refreshToken String?  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
-
